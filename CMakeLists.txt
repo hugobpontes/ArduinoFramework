@@ -29,15 +29,13 @@ endif()
 
 #find_package(CppUTest REQUIRED)
 
-add_executable(ArduinoBin)
+add_executable(Arduino.elf)
 
 include(arduino_core)
 
-
-
-target_sources(ArduinoBin PRIVATE
+target_sources(Arduino.elf PRIVATE
     src/main.cpp)
-target_link_libraries(ArduinoBin PRIVATE
+target_link_libraries(Arduino.elf PRIVATE
     ArduinoCore
 )
 
