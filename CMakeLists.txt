@@ -6,8 +6,10 @@ project(
   VERSION 1.0
   LANGUAGES CXX C)
 
+#set path to where arduino modules can be found  
 set (CMAKE_MODULE_PATH cmake/modules)
 
+#check dependencies
 find_program(AVRDUDE avrdude)
 
 if(NOT AVRDUDE)
@@ -26,12 +28,10 @@ if (NOT (EXISTS /usr/lib/avr/include))
     message(FATAL_ERROR "avr-libc not found. Please install it to continue.")
 endif()
 
-
-#find_package(CppUTest REQUIRED)
+#include arduino uno core library 
+include(arduino_uno_core)
 
 add_executable(Arduino.elf)
-
-include(arduino_core)
 
 target_sources(Arduino.elf PRIVATE
     src/main.cpp)
@@ -39,11 +39,4 @@ target_link_libraries(Arduino.elf PRIVATE
     ArduinoCore
 )
 
-
-
-
-#target_link_libraries(ArduinoProject PRIVATE
-#    CppUTest
-#    CppUTestExt)
-
-#require gcc-avr and avrdude and avr-libc
+#requires gcc-avr and avrdude and avr-libc
