@@ -8,15 +8,32 @@ project(
 
 set (CMAKE_MODULE_PATH cmake/modules)
 
+find_program(AVRDUDE avrdude)
 
+if(NOT AVRDUDE)
+    message(FATAL_ERROR "avrdude not found. Please install it to continue.")
+endif()
 
-message(CMAKE_C_FLAGS = ${CMAKE_C_FLAGS})
+find_program(AVR_GCC avr-gcc)
+
+if(NOT AVR_GCC)
+    message(FATAL_ERROR "avr-gcc not found. Please install it to continue.")
+endif()
+
+if (NOT (EXISTS /usr/lib/avr/include))
+    # This is a bad temporary method, that I'll try to fix it in the future
+    # but I could not find avr-libc any other way"
+    message(FATAL_ERROR "avr-libc not found. Please install it to continue.")
+endif()
+
 
 #find_package(CppUTest REQUIRED)
 
 add_executable(ArduinoBin)
 
 include(arduino_core)
+
+
 
 target_sources(ArduinoBin PRIVATE
     src/main.cpp)
