@@ -1,4 +1,7 @@
-message(STATUS "Adding arduino core")
+message(STATUS "Adding arduino uno core")
+
+#add library defined by this file 
+add_library(ArduinoUnoCore STATIC)
 
 include(search_tools)
 
@@ -7,6 +10,7 @@ include(search_tools)
 # arduino core, this is tollerable. 
 
 #setup paths
+set (arduino_cores_path ArduinoCore-avr/cores)
 set (arduino_cores_arduino_path ArduinoCore-avr/cores/arduino)
 set (arduino_drivers_path ArduinoCore-avr/drivers)
 set (arduino_bootloaders_path ArduinoCore-avr/bootloaders)
@@ -14,6 +18,7 @@ set (arduino_extras_path ArduinoCore-avr/extras)
 set (arduino_firmwares_path ArduinoCore-avr/firmwares)
 set (arduino_libraries_path ArduinoCore-avr/libraries)
 set (arduino_variants_path ArduinoCore-avr/variants/standard)
+#variants other than standard are not used with arduino uno
 
 #get source file names
 find_c_cxx_files(arduino_core_arduino_src ${arduino_cores_arduino_path})
@@ -23,51 +28,30 @@ find_c_cxx_files(arduino_firmwares_src ${arduino_firmwares_path})
 find_c_cxx_files(arduino_libraries_src ${arduino_libraries_path})
 find_c_cxx_files(arduino_variants_src ${arduino_variants_path})
 
-set (arduino_srcs  ${arduino_core_arduino_src} ${arduino_libraries_src} ${arduino_extras_src} ${arduino_drivers_src} ${arduino_variants_src})
+set (arduino_srcs  
+  ${arduino_core_arduino_src} 
+  ${arduino_libraries_src} 
+  ${arduino_extras_src} 
+  ${arduino_drivers_src} 
+  ${arduino_variants_src}
+  ${arduino_firmwares_src}
+)
 
-add_library(ArduinoCore STATIC)
-target_sources(ArduinoCore PRIVATE  ${arduino_srcs})
+#add source and inc directories to library
+target_sources(ArduinoUnoCore PRIVATE  ${arduino_srcs})
 
-target_include_directories(ArduinoCore PUBLIC ${arduino_variants_path})
+#directories under variants cannot be added recursively or all directories
+#containing a different pins_arduino.h would be added
+target_include_directories(ArduinoUnoCore PUBLIC ${arduino_variants_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_cores_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_libraries_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_extras_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_bootloaders_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_drivers_path})
+find_and_add_dirs(ArduinoUnoCore ${arduino_firmwares_path})
 
-file(GLOB_RECURSE arduino_cores_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/cores/*")
-foreach(item ${arduino_cores_inc})
-	if(IS_DIRECTORY ${item})
-		target_include_directories(ArduinoCore PUBLIC ${item})
-	endif()
-endforeach()
+#it is very likely that some of these directories and files in them are optional, but since I'm not having any
+#issues with the generation speed, I havent wasted timed checking what needs to be added or not.
+#some dirs may not even contain source files. remove unnecessry dirs and files
+#if looking for faster generation
 
-#file(GLOB_RECURSE arduino_firmwares_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/firmwares/*")
-#foreach(item ${arduino_firmwares_inc})
-#	if(IS_DIRECTORY ${item})
-#		target_include_directories(ArduinoCore PUBLIC ${item})
-#	endif()
-#endforeach()
-
-file(GLOB_RECURSE arduino_libraries_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/libraries/*")
-foreach(item ${arduino_libraries_inc})
-	if(IS_DIRECTORY ${item})
-		target_include_directories(ArduinoCore PUBLIC ${item})
-	endif()
-endforeach()
-
-file(GLOB_RECURSE arduino_extras_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/extras/*")
-foreach(item ${arduino_extras_inc})
-	if(IS_DIRECTORY ${item})
-		target_include_directories(ArduinoCore PUBLIC ${item})
-	endif()
-endforeach()
-
-file(GLOB_RECURSE arduino_bootloaders_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/bootloaders/*")
-foreach(item ${arduino_bootloaders_inc})
-	if(IS_DIRECTORY ${item})
-		target_include_directories(ArduinoCore PUBLIC ${item})
-	endif()
-endforeach()
-
-file(GLOB_RECURSE arduino_drivers_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/drivers/*")
-foreach(item ${arduino_drivers_inc})
-	if(IS_DIRECTORY ${item})
-		target_include_directories(ArduinoCore PUBLIC ${item})
-	endif()
-endforeach()

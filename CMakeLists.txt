@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.21)
 
 project(
@@ -31,12 +30,12 @@ endif()
 #include arduino uno core library 
 include(arduino_uno_core)
 
-add_executable(Arduino.elf)
+add_executable(ArduinoUno.elf)
 
-target_sources(Arduino.elf PRIVATE
+target_sources(ArduinoUno.elf PRIVATE
     src/main.cpp)
-target_link_libraries(Arduino.elf PRIVATE
-    ArduinoCore
+target_link_libraries(ArduinoUno.elf PRIVATE
+    ArduinoUnoCore
 )
 
 #requires gcc-avr and avrdude and avr-libc
