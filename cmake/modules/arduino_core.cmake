@@ -50,15 +50,50 @@ file(GLOB_RECURSE arduino_libraries_src
 
 set (arduino_variants_src ${arduino_variants_path}/standard/pins_arduino.h)
 
-set (arduino_srcs  ${arduino_core_arduino_src} ${arduino_variants_src} ${arduino_libraries_src} ${arduino_firmwares_src} ${arduino_extras_src} ${arduino_drivers_src} )
-
-message (arduino_core_arduino_src = ${arduino_core_arduino_src})
+set (arduino_srcs  ${arduino_core_arduino_src} ${arduino_libraries_src} ${arduino_extras_src} ${arduino_drivers_src} )
 
 add_library(ArduinoCore STATIC)
 target_sources(ArduinoCore PRIVATE  ${arduino_srcs})
 
-file(GLOB_RECURSE core_files_and_dirs LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/*")
-foreach(item ${core_files_and_dirs})
+target_include_directories(ArduinoCore PUBLIC ${arduino_variants_path}/standard/)
+
+file(GLOB_RECURSE arduino_cores_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/cores/*")
+foreach(item ${arduino_cores_inc})
+	if(IS_DIRECTORY ${item})
+		target_include_directories(ArduinoCore PUBLIC ${item})
+	endif()
+endforeach()
+
+#file(GLOB_RECURSE arduino_firmwares_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/firmwares/*")
+#foreach(item ${arduino_firmwares_inc})
+#	if(IS_DIRECTORY ${item})
+#		target_include_directories(ArduinoCore PUBLIC ${item})
+#	endif()
+#endforeach()
+
+file(GLOB_RECURSE arduino_libraries_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/libraries/*")
+foreach(item ${arduino_libraries_inc})
+	if(IS_DIRECTORY ${item})
+		target_include_directories(ArduinoCore PUBLIC ${item})
+	endif()
+endforeach()
+
+file(GLOB_RECURSE arduino_extras_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/extras/*")
+foreach(item ${arduino_extras_inc})
+	if(IS_DIRECTORY ${item})
+		target_include_directories(ArduinoCore PUBLIC ${item})
+	endif()
+endforeach()
+
+file(GLOB_RECURSE arduino_bootloaders_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/bootloaders/*")
+foreach(item ${arduino_bootloaders_inc})
+	if(IS_DIRECTORY ${item})
+		target_include_directories(ArduinoCore PUBLIC ${item})
+	endif()
+endforeach()
+
+file(GLOB_RECURSE arduino_drivers_inc LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/ArduinoCore-avr/drivers/*")
+foreach(item ${arduino_drivers_inc})
 	if(IS_DIRECTORY ${item})
 		target_include_directories(ArduinoCore PUBLIC ${item})
 	endif()

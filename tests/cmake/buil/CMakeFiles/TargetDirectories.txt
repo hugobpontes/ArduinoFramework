@@ -1,2 +1,0 @@
-/home/hugo/Desktop/arduino_cmake/tests/cmake/buil/CMakeFiles/edit_cache.dir
-/home/hugo/Desktop/arduino_cmake/tests/cmake/buil/CMakeFiles/rebuild_cache.dir
